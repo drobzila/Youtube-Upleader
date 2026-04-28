@@ -116,25 +116,45 @@ def upload(video_id, title):
 def main():
     videos = get_videos()
 
+    if not videos:
+        print("⚠️ No videos found")
+        return
+
+    posted_any = False
+
     for v in videos:
         vid = v["id"]
+        title = v["title"]
 
-        print("Checking:", vid)
+        print("🔍 Checking:", vid)
 
+        # 1. منع التكرار أولاً (أهم خطوة)
         if already_posted(vid):
             print("⏭ Already posted")
             continue
 
+        # 2. التحقق أنه Short
         if not is_short(vid):
             print("❌ Not Short")
             continue
 
-        success = upload(vid, v["title"])
+        # 3. محاولة النشر
+        try:
+            success = upload(vid, title)
+        except Exception as e:
+            print(f"❌ Upload error: {e}")
+            continue
 
+        # 4. إذا نجح النشر
         if success:
             mark_posted(vid)
             print("✔ Saved as last posted")
+            posted_any = True
             break
+
+    # 5. لو ما نشر شيء
+    if not posted_any:
+        print("ℹ️ No new videos were posted today")
 
 
 if __name__ == "__main__":
