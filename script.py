@@ -65,11 +65,14 @@ def is_short(video_id):
 
 def load_posted():
     if not os.path.exists(POSTED_FILE):
+        print("⚠️ posted file not found → creating new")
         return set()
 
-    with open(POSTED_FILE, "r") as f:
-        return set(line.strip() for line in f if line.strip())
+    with open(POSTED_FILE, "r", encoding="utf-8") as f:
+        data = set(line.strip() for line in f if line.strip())
 
+    print(f"📄 Loaded {len(data)} posted videos")
+    return data
 
 def mark_posted(video_id):
     with open(POSTED_FILE, "a") as f:
