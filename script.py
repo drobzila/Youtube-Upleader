@@ -65,7 +65,7 @@ def is_short(video_id):
 
 def load_posted():
     if not os.path.exists(POSTED_FILE):
-        print("⚠️ posted file not found → creating new")
+        print("⚠️ posted file missing → waiting for repo file")
         return set()
 
     with open(POSTED_FILE, "r", encoding="utf-8") as f:
@@ -131,6 +131,8 @@ def upload(video_id, title):
 # -----------------------------
 def main():
     videos = get_videos()
+
+    print("📌 Already stored IDs:", posted_ids)
 
     if not videos:
         print("⚠️ No videos found")
