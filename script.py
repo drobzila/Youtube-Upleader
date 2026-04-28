@@ -132,14 +132,15 @@ def upload(video_id, title):
 def main():
     videos = get_videos()
 
+    posted_ids = load_posted()   # 👈 لازم أول شيء
+
     print("📌 Already stored IDs:", posted_ids)
+
+    posted_any = False
 
     if not videos:
         print("⚠️ No videos found")
         return
-
-    posted_ids = load_posted()
-    posted_any = False   # 🔥 هذا هو الحل
 
     for v in videos:
         vid = v["id"]
@@ -169,6 +170,7 @@ def main():
 
     if not posted_any:
         print("ℹ️ No new videos were posted today")
+
 
 if __name__ == "__main__":
     main()
