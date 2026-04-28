@@ -7,7 +7,7 @@ CHANNEL_ID = os.getenv("CHANNEL_ID")
 PAGE_ID = os.getenv("FB_PAGE_ID")
 ACCESS_TOKEN = os.getenv("FB_ACCESS_TOKEN")
 
-LAST_FILE = "last_video.txt"
+POSTED_FILE = "posted_ids.txt"
 
 # -----------------------------
 # 1. Get latest videos
@@ -62,6 +62,19 @@ def is_short(video_id):
 
 
 # -----------------------------
+
+def load_posted():
+    if not os.path.exists(POSTED_FILE):
+        return set()
+
+    with open(POSTED_FILE, "r") as f:
+        return set(line.strip() for line in f if line.strip())
+
+
+def mark_posted(video_id):
+    with open(POSTED_FILE, "a") as f:
+        f.write(video_id + "\n")
+
 # 3. Check duplicate
 # -----------------------------
 def already_posted(video_id):
@@ -120,36 +133,34 @@ def main():
         print("⚠️ No videos found")
         return
 
-    posted_any = False
+    posted_ids = load_posted()
 
     for v in videos:
         vid = v["id"]
-        title = v["title"]
 
         print("🔍 Checking:", vid)
 
-        # 1. منع التكرار أولاً (أهم خطوة)
-        if already_posted(vid):
+        # ✔ منع التكرار (كل التاريخ)
+        if vid in posted_ids:
             print("⏭ Already posted")
             continue
 
-        # 2. التحقق أنه Short
+        # ✔ تحقق Short
         if not is_short(vid):
             print("❌ Not Short")
             continue
 
-        # 3. محاولة النشر
+        # ✔ نشر
         try:
-            success = upload(vid, title)
+            success = upload(vid, v["title"])
         except Exception as e:
             print(f"❌ Upload error: {e}")
             continue
 
-        # 4. إذا نجح النشر
+        # ✔ إذا نجح
         if success:
             mark_posted(vid)
-            print("✔ Saved as last posted")
-            posted_any = True
+            print("✔ Saved to posted list")
             break
 
     # 5. لو ما نشر شيء
