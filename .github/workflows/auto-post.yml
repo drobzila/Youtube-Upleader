@@ -37,6 +37,9 @@ jobs:
           git config user.email "github-actions@github.com"
           git add last_video.txt
           git commit -m "Update last video" || echo "No changes"
+          git push          git config user.email "github-actions@github.com"
+          git add last_video.txt
+          git commit -m "Update last video" || echo "No changes"
           git push          FB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: python script.py
 
