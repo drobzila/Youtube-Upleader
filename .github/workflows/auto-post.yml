@@ -1,32 +1,30 @@
-name: Auto Post YouTube Shorts to Facebook
+name: Daily YouTube to Facebook
 
 on:
   schedule:
-    - cron: "0 10 * * *"   # كل يوم الساعة 10 صباحًا (UTC)
-  workflow_dispatch:       # تشغيل يدوي
+    - cron: "0 6 * * *"  # كل يوم 6 صباحًا
+  workflow_dispatch:
 
 jobs:
-  run-script:
+  run:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Clone repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: |
-          pip install yt-dlp requests python-dotenv isodate feedparser
+          pip install requests yt-dlp isodate
 
-      - name: 🔐 Create .env file
-        run: |
-          echo "PAGE_ID=${{ secrets.PAGE_ID }}" >> .env
-          echo "ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}" >> .env
-          echo "CHANNEL_URL=${{ secrets.CHANNEL_URL }}" >> .env
-
-      - name: 🚀 Run script
+      - name: Run script
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+          FB_PAGE_ID: ${{ secrets.PAGE_ID }}
+          FB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: python script.py
