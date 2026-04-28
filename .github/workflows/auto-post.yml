@@ -21,6 +21,7 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           pip install yt-dlp requests python-dotenv
+          pip install yt-dlp requests python-dotenv isodate
 
       - name: 🔐 Create .env file
         run: |
