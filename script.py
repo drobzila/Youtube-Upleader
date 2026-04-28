@@ -21,8 +21,14 @@ def get_videos():
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(CHANNEL_URL, download=False)
-        return info.get("entries", [])
 
+        videos = info.get("entries", [])
+
+        # فلترة أي عنصر بدون ID
+        clean_videos = [v for v in videos if v.get("id")]
+
+        return clean_videos
+        
 # -----------------------------
 # 2. Filter Shorts (<= 60 sec)
 # -----------------------------
@@ -86,15 +92,27 @@ def main():
     videos = get_videos()
 
     for v in videos:
+    try:
         video_url = f"https://www.youtube.com/watch?v={v['id']}"
 
-        print("فحص الفيديو:", video_url)
+        print("فحص:", video_url)
 
         short, info = is_short(video_url)
 
         if not short:
             print("❌ ليس Short")
             continue
+
+        print("✔ Short صالح")
+
+        video_path, video_id = download_video(video_url)
+
+        upload(video_path, info.get("title", "🌿 آية قصيرة"))
+        break
+
+    except Exception as e:
+        print("⚠️ تم تجاهل فيديو غير صالح:", e)
+        continue
 
         print("✔ Short تم اختياره")
 
