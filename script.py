@@ -1,6 +1,7 @@
 import os
 import yt_dlp
 import requests
+import feedparser
 import isodate
 from dotenv import load_dotenv
 
@@ -14,25 +15,19 @@ CHANNEL_URL = os.getenv("CHANNEL_URL")
 # 1. Get videos list
 # -----------------------------
 def get_videos():
-    ydl_opts = {
-        "quiet": True,
-        "extract_flat": True,
-        "skip_download": True
-    }
+    feed = f"https://www.youtube.com/feeds/videos.xml?channel_id={CHANNEL_ID}"
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(CHANNEL_URL, download=False)
+    data = feedparser.parse(feed)
 
-        videos = []
+    videos = []
 
-        for v in info.get("entries", []):
-            vid = v.get("id")
+    for entry in data.entries:
+        videos.append({
+            "id": entry.yt_videoid,
+            "title": entry.title
+        })
 
-            # فلترة قوية جدًا
-            if vid and len(vid) == 11 and vid.isalnum():
-                videos.append(v)
-
-        return videos
+    return videos
         
 # -----------------------------
 # 2. Filter Shorts (<= 60 sec)
