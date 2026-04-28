@@ -66,6 +66,19 @@ def upload(video_path, title):
     res = requests.post(url, files=files, data=data)
     print(res.json())
 
+def get_videos():
+    if not CHANNEL_URL:
+        raise Exception("CHANNEL_URL غير موجود في Secrets!")
+
+    ydl_opts = {
+        "quiet": True,
+        "extract_flat": True
+    }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(CHANNEL_URL, download=False)
+        return info.get("entries", [])
+
 # -----------------------------
 # 5. Main
 # -----------------------------
