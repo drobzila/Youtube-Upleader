@@ -91,29 +91,31 @@ def get_videos():
 def main():
     videos = get_videos()
 
-    for v in get_videos():
-    video_id = v["id"]
+    for v in videos:
+        try:
+            video_id = v["id"]
 
-    if not video_id:
-        continue
+            if not video_id:
+                continue
 
-    video_url = f"https://www.youtube.com/watch?v={video_id}"
+            video_url = f"https://www.youtube.com/watch?v={video_id}"
 
-    print("فحص:", video_url)
+            print("فحص:", video_url)
 
-    short, info = is_short(video_url)
+            short, info = is_short(video_url)
 
-    if not short:
-        continue
+            if not short:
+                continue
 
-    video_path, _ = download_video(video_url)
+            video_path, _ = download_video(video_url)
 
-    upload(video_path, info.get("title", "🌿 آية"))
+            upload(video_path, info.get("title", "🌿 آية"))
 
-    break
+            print("✔ تم النشر")
+            break
 
         except Exception as e:
-            print("⚠️ تجاهل فيديو:", e)
+            print("⚠️ خطأ:", e)
             continue
 
 
