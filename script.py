@@ -4,8 +4,8 @@ import isodate
 
 API_KEY = os.getenv("YOUTUBE_API_KEY")
 CHANNEL_ID = os.getenv("CHANNEL_ID")
-PAGE_ID = os.getenv("PAGE_ID")
-ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
+PAGE_ID = os.getenv("FB_PAGE_ID")
+ACCESS_TOKEN = os.getenv("FB_ACCESS_TOKEN")
 
 # -----------------------------
 # 1. Get latest videos
