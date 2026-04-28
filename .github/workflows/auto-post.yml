@@ -14,6 +14,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 🔥 مهم: نجيب آخر نسخة من repo
+      - name: Pull latest changes
+        run: git pull origin main
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -31,10 +37,19 @@ jobs:
           FB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: python script.py
 
+      # 🔥 حفظ آخر فيديو بدون حذف التاريخ
       - name: Commit last video file
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+
+          git add last_video.txt
+
+          git commit -m "Update last video" || echo "No changes"
+
+          git pull --rebase origin main
+
+          git push          git config user.email "github-actions@github.com"
           git add last_video.txt
           git commit -m "Update last video" || echo "No changes"
           git push
