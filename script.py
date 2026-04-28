@@ -89,9 +89,8 @@ def already_posted(video_id):
 
 
 def mark_posted(video_id):
-    with open(POSTED_FILE, "w") as f:
-        f.write(video_id)
-
+    with open(POSTED_FILE, "a", encoding="utf-8") as f:
+        f.write(video_id + "\n")
 
 # -----------------------------
 # 4. Post to Facebook
