@@ -1,5 +1,8 @@
 name: YouTube Shorts to Facebook (Link Only)
 
+permissions:
+  contents: write
+
 on:
   schedule:
     - cron: "0 6 * * *"
@@ -27,3 +30,11 @@ jobs:
           FB_PAGE_ID: ${{ secrets.PAGE_ID }}
           FB_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: python script.py
+
+      - name: Commit last video file
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add last_video.txt
+          git commit -m "Update last video" || echo "No changes"
+          git push
