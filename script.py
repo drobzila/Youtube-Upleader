@@ -78,15 +78,15 @@ def mark_posted(video_id):
 # 3. Check duplicate
 # -----------------------------
 def already_posted(video_id):
-    if not os.path.exists(LAST_FILE):
+    if not os.path.exists(POSTED_FILE):
         return False
 
-    with open(LAST_FILE, "r") as f:
+    with open(POSTED_FILE, "r") as f:
         return video_id.strip() == f.read().strip()
 
 
 def mark_posted(video_id):
-    with open(LAST_FILE, "w") as f:
+    with open(POSTED_FILE, "w") as f:
         f.write(video_id)
 
 
