@@ -66,13 +66,22 @@ def upload(video_id, title):
     url = f"https://graph.facebook.com/{PAGE_ID}/feed"
 
     data = {
-        "message": f"{title}\n\n📺 شاهد الفيديو: {video_url}\n🌿 نسمات القرآن",
+        "message": f"{title}\n\n📺 {video_url}\n🌿 نسمات القرآن",
         "access_token": ACCESS_TOKEN
     }
 
     res = requests.post(url, data=data)
+    result = res.json()
 
-    print(res.json())
+    print(result)
+
+    # ✔ تحقق حقيقي من النجاح
+    if "error" in result:
+        print("❌ فشل النشر في Facebook")
+        return False
+
+    print("✔ تم النشر بنجاح")
+    return True
 
 # -----------------------------
 # 4. Main
