@@ -9,6 +9,7 @@ ACCESS_TOKEN = os.getenv("FB_ACCESS_TOKEN")
 
 POSTED_FILE = "posted_ids.txt"
 
+
 # -----------------------------
 # 1. Get latest videos
 # -----------------------------
@@ -58,14 +59,15 @@ def is_short(video_id):
     duration = items[0]["contentDetails"]["duration"]
     seconds = isodate.parse_duration(duration).total_seconds()
 
-    return 00 <= seconds <= 60
+    return 0 <= seconds <= 60
 
 
 # -----------------------------
-
+# 3. Load posted IDs
+# -----------------------------
 def load_posted():
     if not os.path.exists(POSTED_FILE):
-        print("⚠️ posted file missing → waiting for repo file")
+        print("⚠️ posted file missing → creating new")
         return set()
 
     with open(POSTED_FILE, "r", encoding="utf-8") as f:
@@ -74,26 +76,17 @@ def load_posted():
     print(f"📄 Loaded {len(data)} posted videos")
     return data
 
-def mark_posted(video_id):
-    with open(POSTED_FILE, "a") as f:
-        f.write(video_id + "\n")
 
-# 3. Check duplicate
 # -----------------------------
-def already_posted(video_id):
-    if not os.path.exists(POSTED_FILE):
-        return False
-
-    with open(POSTED_FILE, "r") as f:
-        return video_id.strip() == f.read().strip()
-
-
+# 4. Save posted ID
+# -----------------------------
 def mark_posted(video_id):
     with open(POSTED_FILE, "a", encoding="utf-8") as f:
         f.write(video_id + "\n")
 
+
 # -----------------------------
-# 4. Post to Facebook
+# 5. Upload to Facebook
 # -----------------------------
 def upload(video_id, title):
     video_url = f"https://www.youtube.com/watch?v={video_id}"
@@ -126,20 +119,17 @@ def upload(video_id, title):
 
 
 # -----------------------------
-# 5. Main
+# 6. Main
 # -----------------------------
 def main():
     videos = get_videos()
 
-    posted_ids = load_posted()   # 👈 لازم أول شيء
-
-    print("📌 Already stored IDs:", posted_ids)
-
-    posted_any = False
-
     if not videos:
         print("⚠️ No videos found")
         return
+
+    posted_ids = load_posted()
+    print("📌 Already stored IDs:", len(posted_ids))
 
     for v in videos:
         vid = v["id"]
@@ -147,14 +137,17 @@ def main():
 
         print("🔍 Checking:", vid)
 
+        # منع التكرار
         if vid in posted_ids:
             print("⏭ Already posted")
             continue
 
+        # تحقق Short
         if not is_short(vid):
             print("❌ Not Short")
             continue
 
+        # نشر
         try:
             success = upload(vid, title)
         except Exception as e:
@@ -163,13 +156,12 @@ def main():
 
         if success:
             mark_posted(vid)
-            posted_any = True
             print("✔ Saved to posted list")
             break
 
-    if not posted_any:
-        print("ℹ️ No new videos were posted today")
 
-
+# -----------------------------
+# Run
+# -----------------------------
 if __name__ == "__main__":
     main()
