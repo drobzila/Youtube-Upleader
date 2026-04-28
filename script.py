@@ -134,39 +134,36 @@ def main():
         return
 
     posted_ids = load_posted()
+    posted_any = False   # 🔥 هذا هو الحل
 
     for v in videos:
         vid = v["id"]
+        title = v["title"]
 
         print("🔍 Checking:", vid)
 
-        # ✔ منع التكرار (كل التاريخ)
         if vid in posted_ids:
             print("⏭ Already posted")
             continue
 
-        # ✔ تحقق Short
         if not is_short(vid):
             print("❌ Not Short")
             continue
 
-        # ✔ نشر
         try:
-            success = upload(vid, v["title"])
+            success = upload(vid, title)
         except Exception as e:
             print(f"❌ Upload error: {e}")
             continue
 
-        # ✔ إذا نجح
         if success:
             mark_posted(vid)
+            posted_any = True
             print("✔ Saved to posted list")
             break
 
-    # 5. لو ما نشر شيء
     if not posted_any:
         print("ℹ️ No new videos were posted today")
-
 
 if __name__ == "__main__":
     main()
