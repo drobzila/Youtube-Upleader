@@ -28,8 +28,8 @@ def get_videos():
         for v in info.get("entries", []):
             vid = v.get("id")
 
-            # فلترة ID الصحيح فقط (11 chars تقريبًا)
-            if vid and len(vid) <= 20 and " " not in vid:
+            # فلترة قوية جدًا
+            if vid and len(vid) == 11 and vid.isalnum():
                 videos.append(v)
 
         return videos
