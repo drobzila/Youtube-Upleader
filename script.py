@@ -16,18 +16,23 @@ CHANNEL_URL = os.getenv("CHANNEL_URL")
 def get_videos():
     ydl_opts = {
         "quiet": True,
-        "extract_flat": True
+        "extract_flat": True,
+        "skip_download": True
     }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(CHANNEL_URL, download=False)
 
-        videos = info.get("entries", [])
+        videos = []
 
-        # فلترة أي عنصر بدون ID
-        clean_videos = [v for v in videos if v.get("id")]
+        for v in info.get("entries", []):
+            vid = v.get("id")
 
-        return clean_videos
+            # فلترة ID الصحيح فقط (11 chars تقريبًا)
+            if vid and len(vid) <= 20 and " " not in vid:
+                videos.append(v)
+
+        return videos
         
 # -----------------------------
 # 2. Filter Shorts (<= 60 sec)
@@ -93,7 +98,12 @@ def main():
 
     for v in videos:
         try:
-            video_url = f"https://www.youtube.com/watch?v={v['id']}"
+            video_id = v.get("id")
+
+            if not video_id:
+                continue
+
+            video_url = f"https://www.youtube.com/watch?v={video_id}"
 
             print("فحص:", video_url)
 
@@ -103,17 +113,15 @@ def main():
                 print("❌ ليس Short")
                 continue
 
-            print("✔ Short صالح")
-
-            video_path, video_id = download_video(video_url)
+            video_path, _ = download_video(video_url)
 
             upload(video_path, info.get("title", "🌿 آية قصيرة"))
 
-            print("✔ Short تم نشره")
-            break  # ينشر واحد فقط يوميًا
+            print("✔ تم النشر")
+            break
 
         except Exception as e:
-            print("⚠️ تم تجاهل فيديو غير صالح:", e)
+            print("⚠️ تجاهل فيديو:", e)
             continue
 
 
