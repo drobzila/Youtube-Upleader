@@ -92,34 +92,30 @@ def main():
     videos = get_videos()
 
     for v in videos:
-    try:
-        video_url = f"https://www.youtube.com/watch?v={v['id']}"
+        try:
+            video_url = f"https://www.youtube.com/watch?v={v['id']}"
 
-        print("فحص:", video_url)
+            print("فحص:", video_url)
 
-        short, info = is_short(video_url)
+            short, info = is_short(video_url)
 
-        if not short:
-            print("❌ ليس Short")
+            if not short:
+                print("❌ ليس Short")
+                continue
+
+            print("✔ Short صالح")
+
+            video_path, video_id = download_video(video_url)
+
+            upload(video_path, info.get("title", "🌿 آية قصيرة"))
+
+            print("✔ Short تم نشره")
+            break  # ينشر واحد فقط يوميًا
+
+        except Exception as e:
+            print("⚠️ تم تجاهل فيديو غير صالح:", e)
             continue
 
-        print("✔ Short صالح")
-
-        video_path, video_id = download_video(video_url)
-
-        upload(video_path, info.get("title", "🌿 آية قصيرة"))
-        break
-
-    except Exception as e:
-        print("⚠️ تم تجاهل فيديو غير صالح:", e)
-        continue
-
-        print("✔ Short تم اختياره")
-
-        video_path, video_id = download_video(video_url)
-
-        upload(video_path, info.get("title", "🌿 آية قصيرة"))
-        break  # ينشر واحد فقط يوميًا
 
 if __name__ == "__main__":
     main()
