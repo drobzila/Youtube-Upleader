@@ -185,7 +185,7 @@ def upload_to_facebook(session: requests.Session, video_id: str, title: str) -> 
 📺 شاهد الفيديو:
 {video_url}
 
-🌿 نسائم القرآن"""
+🌿 نسمات القرآن"""
 
     data = {
         "message": message,
