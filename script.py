@@ -190,11 +190,10 @@ def upload_to_facebook(session: requests.Session, video_id: str, title: str) -> 
     url = FB_FEED_URL.format(page_id=PAGE_ID)
 
     message = f"""{hook}
-
-🌙 {title}
-    
 📺 شاهد الفيديو:
 {video_url}
+
+🌙 {title}
 
 🌿 نسمات القرآن"""
 
