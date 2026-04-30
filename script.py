@@ -14,7 +14,6 @@ PAGE_ID = os.getenv("FB_PAGE_ID")
 ACCESS_TOKEN = os.getenv("FB_ACCESS_TOKEN")
 
 POSTED_FILE = "posted_ids.txt"
-hook = random.choice(hooks)
 
 YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search"
 YOUTUBE_VIDEOS_URL = "https://www.googleapis.com/youtube/v3/videos"
@@ -38,6 +37,7 @@ hooks = [
     "🤍 رسالة لك اليوم"
 ]
 
+hook = random.choice(hooks)
 
 def request_json(
     session: requests.Session,
