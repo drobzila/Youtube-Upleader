@@ -5,6 +5,7 @@ import time
 from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 import isodate
+import random
 import requests
 
 API_KEY = os.getenv("YOUTUBE_API_KEY")
@@ -13,6 +14,7 @@ PAGE_ID = os.getenv("FB_PAGE_ID")
 ACCESS_TOKEN = os.getenv("FB_ACCESS_TOKEN")
 
 POSTED_FILE = "posted_ids.txt"
+hook = random.choice(hooks)
 
 YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search"
 YOUTUBE_VIDEOS_URL = "https://www.googleapis.com/youtube/v3/videos"
@@ -28,6 +30,13 @@ def require_env(name: str) -> str:
     if not value:
         raise RuntimeError(f"Missing required environment variable: {name}")
     return value
+
+hooks = [
+    "✨ هل سمعت هذه الآية من قبل؟",
+    "⛔ لا تتجاهل هذا الفيديو...",
+    "🌿 دقيقة واحدة قد تغيّر يومك",
+    "🤍 رسالة لك اليوم"
+]
 
 
 def request_json(
@@ -180,8 +189,10 @@ def upload_to_facebook(session: requests.Session, video_id: str, title: str) -> 
     video_url = f"https://www.youtube.com/watch?v={video_id}"
     url = FB_FEED_URL.format(page_id=PAGE_ID)
 
-    message = f"""🌙 {title}
+    message = f"""{hook}
 
+🌙 {title}
+    
 📺 شاهد الفيديو:
 {video_url}
 
